@@ -1,0 +1,93 @@
+
+<div class="container mt-3">
+  <form [formGroup]="SampleForm">
+    <div>
+      <mat-form-field>
+        <mat-select placeholder="select User Type" formControlName="types" requried (selectionChange)="onSelectType()">
+          <mat-option *ngFor="let type of types" [value]="type.id">{{type.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="hideDepts">
+      <mat-form-field >
+        <mat-select placeholder="List of Depts" formControlName="depts" requried (selectionChange)="onSelectDept()">
+          <mat-option *ngFor="let dept of depts" [value]="dept.deptId">{{dept.deptName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="hideUsers"> 
+      <mat-form-field>
+        <mat-select placeholder="select Users" formControlName="users" requried>
+          <mat-option *ngFor="let user of users" [value]="user.userId">{{user.userName}}</mat-option> 
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <button [disabled]="!SampleForm.valid" type="submit" class="btn btn-primary text-center">Submit</button>
+    </div>
+    
+  </form>
+</div>
+
+
+
+
+<br>
+<div class="container">
+  <mat-radio-group aria-label="Select an option">
+    <mat-radio-button value="email" #email>Email</mat-radio-button>
+    <mat-radio-button value="sms" #sms>SMS</mat-radio-button>
+  </mat-radio-group>
+</div>
+
+<div *ngIf="email.checked" class="container">
+  <form [formGroup]="checkEmail">
+    <mat-form-field>
+      <input matInput formControlName="emailValue" placeholder="EmailId">
+      <mat-error *ngIf="checkEmail.controls.emailValue.invalid && checkEmail.controls.emailValue.touched">
+        Please Enter Valid Email 
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="sub" placeholder="Subject" required minlength="5" maxlength="50" [errorStateMatcher]="matcher">
+      <mat-error *ngIf="checkEmail.controls.sub.required">Subject is requried</mat-error>
+      <mat-error *ngIf="checkEmail.controls.sub.invalid && checkEmail.controls.sub.touched">
+        Subject is Minimum 5 Characters and Maximum 50 Characters
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="cnt" placeholder="Content" required minlength="5" maxlength="100">
+      <mat-error *ngIf="checkEmail.controls.cnt.invalid && checkEmail.controls.cnt.touched">
+        Content is Minimum 5 Characters and Maximum 100 Characters
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="senderEm" placeholder="Sender Email" readonly>
+    </mat-form-field>
+    <button [disabled]="!checkEmail.valid && (hideDepts && !hideUsers)" (click)="emailDetails()" type="submit" class="btn btn-primary text-center">Send Message</button>
+  </form>  
+</div>
+
+<div *ngIf="sms.checked" class="container">
+  <form [formGroup]="checkSms">
+    <mat-form-field>
+      <input matInput formControlName="mobile" placeholder="Mobile Number" required minlength="10" maxlength="10">
+      <mat-error *ngIf="checkSms.controls.mobile.invalid && checkSms.controls.mobile.touched">
+        Mobile Number Should be 10 Digits
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="mobileMsg" placeholder="Messsge" required minlength="5" maxlength="100">
+      <mat-error *ngIf="checkSms.controls.mobileMsg.invalid && checkSms.controls.mobileMsg.touched">
+        Message is Minimum 5 Characters and Maximum 100 Characters
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput formControlName="senderMob" placeholder="Sender Mobile Number" readonly>
+    </mat-form-field>
+    <button [disabled]="!checkSms.valid"  (click)="smsDetails()" type="submit" class="btn btn-primary text-center">Send Message</button>
+  </form>  
+</div>
+
+
