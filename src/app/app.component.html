@@ -8,25 +8,23 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="hideDepts">
+    <div *ngIf="showDepts">
       <mat-form-field >
         <mat-select placeholder="List of Depts" formControlName="depts" requried (selectionChange)="onSelectDept()">
           <mat-option *ngFor="let dept of depts" [value]="dept.deptId">{{dept.deptName}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="hideUsers"> 
+    <div *ngIf="showUsers"> 
       <mat-form-field>
         <mat-select placeholder="select Users" formControlName="users" requried>
           <mat-option *ngFor="let user of users" [value]="user.userId">{{user.userName}}</mat-option> 
         </mat-select>
       </mat-form-field>
     </div>
-
     <div>
       <button [disabled]="!SampleForm.valid" type="submit" class="btn btn-primary text-center">Submit</button>
     </div>
-    
   </form>
 </div>
 
@@ -65,7 +63,7 @@
     <mat-form-field>
       <input matInput formControlName="senderEm" placeholder="Sender Email" readonly>
     </mat-form-field>
-    <button [disabled]="!checkEmail.valid && (hideDepts && !hideUsers)" (click)="emailDetails()" type="submit" class="btn btn-primary text-center">Send Message</button>
+    <button [disabled]="!checkEmail.valid" (click)="emailDetails()" type="submit" class="btn btn-primary text-center">Send Message</button>
   </form>  
 </div>
 
@@ -76,6 +74,7 @@
       <mat-error *ngIf="checkSms.controls.mobile.invalid && checkSms.controls.mobile.touched">
         Mobile Number Should be 10 Digits
       </mat-error>
+      <mat-error *ngIf="checkSms.controls.mobile.pattern && checkSms.controls.mobile.touched">Must be Digits Only</mat-error>
     </mat-form-field>
     <mat-form-field>
       <input matInput formControlName="mobileMsg" placeholder="Messsge" required minlength="5" maxlength="100">
