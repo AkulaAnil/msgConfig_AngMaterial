@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -6,7 +6,7 @@ import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   SampleForm: FormGroup;
   checkEmail: FormGroup;
@@ -16,8 +16,8 @@ export class AppComponent {
   types=[]
   depts=[];
   users=[];
-  hideDepts:boolean = false;
-  hideUsers:boolean = false;
+  showDepts:boolean = false;
+  showUsers:boolean = false;
 
   onSelectType() {
     let userType = this.SampleForm.value.types;
@@ -30,18 +30,37 @@ export class AppComponent {
       if(index!=-1){
         this.depts=this.types[index].departments;
       }
-      this.hideDepts = true;
-      this.hideUsers = true;
+      this.showDepts = true;
+      this.showUsers = true;
+      this.SampleForm.get('depts').setValidators(Validators.required);
+      this.SampleForm.get('users').setValidators(Validators.required);
     }else{
-      this.hideDepts = false;
+      this.showDepts = false;
+      this.SampleForm.get('depts').setValue(null);
+      this.SampleForm.get('depts').clearValidators();
+      this.SampleForm.get('depts').updateValueAndValidity();
       if(userType==3){
-        this.hideDepts = false;
-        this.hideUsers = false;
+        this.showDepts = false;
+        this.showUsers = false;
+        this.SampleForm.get('users').setValue(null);
+        this.SampleForm.get('users').clearValidators();
+        this.SampleForm.get('users').updateValueAndValidity();
+        this.SampleForm.get('depts').setValue(null);
+        this.SampleForm.get('depts').clearValidators();
+        this.SampleForm.get('depts').updateValueAndValidity();
       }else{   
-        this.hideUsers = true;
+        this.showUsers = true;
+        this.showDepts = false;
         if(userType == 2){
-          let index=this.depts.findIndex(x=>x.deptId==userType);
-          if(index!=-1){
+          console.log("departmenttype",this.types)
+          this.SampleForm.get('users').setValidators(Validators.required);
+          this.SampleForm.get('users').updateValueAndValidity();
+          this.SampleForm.get('depts').setValue(null);
+          this.SampleForm.get('depts').clearValidators();
+          this.SampleForm.get('depts').updateValueAndValidity();
+          let index=this.types.findIndex(x=>x.id ==this.SampleForm.value.types) ;
+
+          if(index!=-1){      
             this.users=this.types[index].users;
           }
         }
@@ -71,7 +90,7 @@ export class AppComponent {
       senderEm: ['anil@gmail.com', [Validators.required, Validators.email]],
     })
     this.checkSms = this.fb.group({
-      mobile: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      mobile: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern("^[0-9]*$")]],
       mobileMsg: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       senderMob: ['9999999999', Validators.required],
     })
@@ -98,7 +117,7 @@ export class AppComponent {
         {userId:3,userName:"Dept-user-3"},
       ]},
       { id: 3, name: 'Normal User'}
-    ];
+    ];    
   }
  
   constructor(private fb:FormBuilder) { 
